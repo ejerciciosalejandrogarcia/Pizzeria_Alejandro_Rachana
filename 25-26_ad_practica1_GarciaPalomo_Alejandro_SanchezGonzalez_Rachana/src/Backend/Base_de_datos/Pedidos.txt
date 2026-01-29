@@ -1,0 +1,1 @@
+1|PED-631-2025|PENDIENTE|2025-11-16 19:02:37|2025-11-16 19:22:37|1|2:2|18.0|10.0|16.2|Bizum|true|Domicilio|Calle Barcelona|null

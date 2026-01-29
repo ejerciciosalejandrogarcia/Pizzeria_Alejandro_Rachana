@@ -1,0 +1,3 @@
+2|Jose|Santos|987654321|jose@pizzeria|TRABAJADOR|$2a$12$MYTs0Uiahss8C9xRGpqiWeHEj0uktrWEiVq.DBitvisNQPdNVuOzW|calle vosta rica|gerente|2013.0|rotativo
+1|Sandra|Perez|123456789|sandra@gmail.com|CLIENTE|$2a$12$7StUeaIOvRFkzoN.G0ltce3a7p41ROFoD/8lh6BlbnqRa1izv9fQO|Calle Barcelona|123423|10.0
+3|Jorge|Ruiz|24322413|jorge@pizzeria|TRABAJADOR|$2a$12$xHcWrfhyJbw54J5iDJ5vNO2b0edFvsA8CC6JzJmbmp6w2ewfx9xiq|null|Cocinero|1.23243214E8|Rotativo

@@ -1,0 +1,7 @@
+1|Margarita|Clásica pizza con queso mozzarella y tomate|7.5|true|Mediana|Tradicional|Tomate|Mozarella,Tomate,Basilico|15
+2|Pepperoni|Pizza con pepperoni y extra queso|9.0|true|Grande|Tradicional|Tomate|Mozarella,Pepperoni|20
+3|Hawaiana|Pizza con jamón y piña|8.5|true|Mediana|Tradicional|Tomate|Mozarella,Jamón,Piña|18
+4|Vegetariana|Pizza con variedad de verduras frescas|8.0|false|Grande|Integral|Tomate|Mozarella,Pimiento,Champiñones,Cebolla,Olivas|22
+5|Cuatro Quesos|Pizza con mezcla de cuatro quesos|10.0|true|Mediana|Tradicional|Tomate|Mozarella,Parmesano,Cheddar,Roquefort|20
+6|Barbacoa|Pizza personalizada|13.0|true|Grande|Fina|Barbacoa|Mozarella,pollo,bacon,maiz|20
+7|Carbonara|Base cremosa de queso, con bacon y champiñones|13.0|true|Mediana|Gruesa|Queso|Champiñones, bacon, huevo|17
