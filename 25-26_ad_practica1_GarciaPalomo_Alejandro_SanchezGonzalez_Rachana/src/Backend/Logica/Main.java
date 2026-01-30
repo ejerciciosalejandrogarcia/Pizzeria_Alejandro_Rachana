@@ -465,29 +465,32 @@ public class Main {
         String ingredientesStr = entrada.nextLine();
         List<String> ingredientes = Arrays.asList(ingredientesStr.split(","));
 
-        // Calcular precio automaticamente
         double precio = 8.50;
 
-        // Precio segun tamanno
         if (tamano.equalsIgnoreCase("Grande")) {
             precio += 2.00;
         } else if (tamano.equalsIgnoreCase("Mediana")) {
             precio += 1.00;
         }
 
-        // Precio por ingrediente adicional
-        double precioIngredientes = ingredientes.size() * 1.50;
-
-        double precioTotal = precio + precioIngredientes;
+        double precioTotal = precio + ingredientes.size() * 1.50;
 
         System.out.println("Precio calculado: $" + String.format("%.2f", precioTotal));
 
-        // USAR count() DE IRepositorio
-        int nuevoId = (int) (repoPizza.count() + 1);
-
-        return new Pizza(nuevoId, nombre, "Pizza personalizada", precioTotal, true,
-                tamano, tipoMasa, tipoSalsa, ingredientes, 20);
+        return new Pizza(
+                0, // 👈 CLAVE ABSOLUTA
+                nombre,
+                "Pizza personalizada",
+                precioTotal,
+                true,
+                tamano,
+                tipoMasa,
+                tipoSalsa,
+                ingredientes,
+                20
+        );
     }
+
 
     // ===================== CREAR PEDIDO - USA save() =====
     static void crearPedido(Usuario usuario, Map<Pizza, Integer> cantidadPizzas, int tiempoPreparacion) throws SQLException {
@@ -608,7 +611,9 @@ public class Main {
     }
 
     // ===================== VER CLIENTES - USA findAll() Y findAllToList() =====
-    static void verClientes() {
+    static void verClientes() throws SQLException {
+        RepositorioUsuario  repoUsuarios = new RepositorioUsuario(obtenerConexion());
+
         // USAR findAllToList() DE IRepositorioExtend
         List<Usuario> usuariosTotal = repoUsuarios.findAllToList();
         List<Cliente> clientes = usuariosTotal.stream()
@@ -629,7 +634,8 @@ public class Main {
     }
 
     // ===================== AÑADIR PIZZA - USA save() Y count() =====
-    static void aniadirPizza() {
+    static void aniadirPizza() throws SQLException {
+        RepositorioPizza repoPizza=new RepositorioPizza(obtenerConexion());
         System.out.println("\n========== AÑADIR PIZZA AL MENU ==========");
 
         System.out.print("Nombre: ");
@@ -679,8 +685,7 @@ public class Main {
         }
 
         // USAR count() DE IRepositorio
-        int nuevoId = (int) (repoPizza.count() + 1);
-        Pizza nuevaPizza = new Pizza(nuevoId, nombre, descripcion, precio, true,
+        Pizza nuevaPizza = new Pizza(0, nombre, descripcion, precio, true,
                 tamano, tipoMasa, tipoSalsa, ingredientes, tiempoPreparacion);
 
         // USAR save() DE IRepositorio
@@ -689,7 +694,8 @@ public class Main {
     }
 
     // ===================== AÑADIR CLIENTE (ADMIN) - USA save() Y existsById() =====
-    static void aniadirClienteDesdeAdmin() {
+    static void aniadirClienteDesdeAdmin() throws SQLException {
+        RepositorioUsuario repoUsuarios=new RepositorioUsuario(obtenerConexion());
         System.out.println("\n========== AÑADIR CLIENTE ==========");
 
         System.out.print("Nombre: ");
@@ -739,7 +745,8 @@ public class Main {
     }
 
     // ===================== AÑADIR TRABAJADOR - USA save() Y count() =====
-    static void aniadirTrabajador() {
+    static void aniadirTrabajador() throws SQLException {
+        RepositorioUsuario repoUsuarios=new RepositorioUsuario(obtenerConexion());
         System.out.println("\n========== AÑADIR TRABAJADOR ==========");
 
         System.out.print("Nombre: ");
@@ -791,7 +798,8 @@ public class Main {
     }
 
     // ===================== ELIMINAR PEDIDO - USA findByIdOptional() Y deleteById() =====
-    static void eliminarPedido() {
+    static void eliminarPedido() throws SQLException {
+       RepositorioPedido repoPedido=new RepositorioPedido(obtenerConexion());
         System.out.println("\n========== ELIMINAR PEDIDO ==========");
 
         // USAR findAllToList() DE IRepositorioExtend
@@ -831,7 +839,8 @@ public class Main {
     }
 
     // ===================== ELIMINAR PIZZA - USA findByIdOptional() Y deleteById() =====
-    static void eliminarPizza() {
+    static void eliminarPizza() throws SQLException {
+      RepositorioPizza  repoPizza=new RepositorioPizza(obtenerConexion());
         System.out.println("\n========== ELIMINAR PIZZA ==========");
 
         // USAR findAllToList() DE IRepositorioExtend

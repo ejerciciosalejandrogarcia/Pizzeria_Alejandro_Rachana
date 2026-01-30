@@ -26,12 +26,7 @@ public class Pedido {
                   double subtotal, double descuento, double total, String metodoPago,
                   boolean entregado, String tipoEntrega, String direccion, String notas) {
 
-        if (id == 0) {
-            this.id = ++contador;
-        } else {
-            this.id = id;
-        }
-
+        this.id = id;
         this.numeroPedido = numeroPedido;
         this.estado = estado;
         this.fechaPedido = fechaPedido;
@@ -138,7 +133,8 @@ public class Pedido {
                 "\nNotas: " + (notas != null ? notas : "Ninguna");
     }
 
-    public void setId(int anInt) {
+    public void setId(int id) {
         this.id=id;
     }
+
 }

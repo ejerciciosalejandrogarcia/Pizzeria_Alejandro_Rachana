@@ -190,55 +190,81 @@ public class RepositorioPedido implements IRepositorioExtend<Pedido, Integer> {
     // ============================
     @Override
     public <S extends Pedido> S save(S pedido) throws SQLException {
-        if (pedido == null) throw new IllegalArgumentException("Pedido no puede ser nulo");
+
+        if (pedido == null)
+            throw new IllegalArgumentException("Pedido no puede ser nulo");
+
         if (pedido.getId() != 0)
-            throw new IllegalArgumentException("El pedido ya tiene ID, usa actualizarPedido() para actualizarlo");
+            throw new IllegalArgumentException(
+                    "El pedido ya tiene ID, usa actualizarPedido() para actualizarlo"
+            );
 
         conexion.setAutoCommit(false);
 
-        try (Statement stmt = conexion.createStatement()) {
-            // INSERT en pedidos
-            String sqlInsert = "INSERT INTO pedidos(numero_pedido, estado, fecha_pedido, fecha_entrega, usuario_id, subtotal, descuento, total, metodo_pago, entregado, tipo_entrega, direccion, notas) VALUES (" +
-                    "'" + pedido.getNumeroPedido().replace("'", "''") + "'," +
-                    "'" + pedido.getEstado().replace("'", "''") + "'," +
-                    "'" + new Timestamp(pedido.getFechaPedido().getTime()) + "'," +
-                    (pedido.getFechaEntrega() != null ? "'" + new Timestamp(pedido.getFechaEntrega().getTime()) + "'" : "NULL") + "," +
-                    pedido.getUsuario().getId() + "," +
-                    pedido.getSubtotal() + "," +
-                    pedido.getDescuento() + "," +
-                    pedido.getTotal() + "," +
-                    "'" + pedido.getMetodoPago().replace("'", "''") + "'," +
-                    pedido.getEntregado() + "," +
-                    "'" + pedido.getTipoEntrega().replace("'", "''") + "'," +
-                    "'" + (pedido.getDireccion() != null ? pedido.getDireccion().replace("'", "''") : "") + "'," +
-                    "'" + (pedido.getNotas() != null ? pedido.getNotas().replace("'", "''") : "") + "'" +
-                    ")";
+        try {
 
-            int filas = stmt.executeUpdate(sqlInsert, Statement.RETURN_GENERATED_KEYS);
+            String sqlInsert = "INSERT INTO pedidos " +
+                    "(numero_pedido, estado, fecha_pedido, fecha_entrega, usuario_id, subtotal, descuento, total, metodo_pago, entregado, tipo_entrega, direccion, notas) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
+            PreparedStatement ps = conexion.prepareStatement(
+                    sqlInsert,
+                    Statement.RETURN_GENERATED_KEYS
+            );
+
+            ps.setString(1, pedido.getNumeroPedido());
+            ps.setString(2, pedido.getEstado());
+            ps.setTimestamp(3, new Timestamp(pedido.getFechaPedido().getTime()));
+            ps.setTimestamp(4,
+                    pedido.getFechaEntrega() != null
+                            ? new Timestamp(pedido.getFechaEntrega().getTime())
+                            : null
+            );
+            ps.setInt(5, pedido.getUsuario().getId());
+            ps.setDouble(6, pedido.getSubtotal());
+            ps.setDouble(7, pedido.getDescuento());
+            ps.setDouble(8, pedido.getTotal());
+            ps.setString(9, pedido.getMetodoPago());
+            ps.setBoolean(10, pedido.getEntregado());
+            ps.setString(11, pedido.getTipoEntrega());
+            ps.setString(12, pedido.getDireccion());
+            ps.setString(13, pedido.getNotas());
+
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
-                    pedido.setId(rs.getInt(1)); // asignar el ID generado
+                    pedido.setId(rs.getInt(1));
                 } else {
-                    throw new SQLException("No se pudo obtener el ID generado del pedido.");
+                    throw new SQLException("No se pudo obtener el ID generado del pedido");
                 }
             }
 
-            // INSERT en pedidos_pizzas
             for (Map.Entry<Pizza, Integer> entry : pedido.getCantidadPizzas().entrySet()) {
-                double precioUnitario = entry.getKey().getPrecio();
-                String sqlRelacion = "INSERT INTO pedidos_pizzas(pedido_id, pizza_id, cantidad, precio_unitario) VALUES (" +
-                        pedido.getId() + "," +
-                        entry.getKey().getId() + "," +
-                        entry.getValue() + "," +
-                        precioUnitario + ")";
-                stmt.executeUpdate(sqlRelacion);
+
+                Pizza pizza = entry.getKey();
+
+                if (pizza.getId() == 0) {
+                    continue;
+                }
+
+                String sqlRelacion =
+                        "INSERT INTO pedidos_pizzas(pedido_id, pizza_id, cantidad, precio_unitario) " +
+                                "VALUES (?, ?, ?, ?)";
+
+                PreparedStatement psRel = conexion.prepareStatement(sqlRelacion);
+                psRel.setInt(1, pedido.getId());
+                psRel.setInt(2, pizza.getId());
+                psRel.setInt(3, entry.getValue());
+                psRel.setDouble(4, pizza.getPrecio());
+
+                psRel.executeUpdate();
             }
 
             conexion.commit();
+
         } catch (SQLException e) {
             conexion.rollback();
-            e.printStackTrace();
             throw e;
         } finally {
             conexion.setAutoCommit(true);
@@ -246,6 +272,7 @@ public class RepositorioPedido implements IRepositorioExtend<Pedido, Integer> {
 
         return pedido;
     }
+
 
 
     // ============================

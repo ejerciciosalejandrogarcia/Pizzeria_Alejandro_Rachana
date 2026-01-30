@@ -84,7 +84,7 @@ public class Pizza {
                 "\nTiempo de Preparación: " + tiempoPreparacion + " minutos";
     }
 
-    public void setId(int anInt) {
+    public void setId(int id) {
         this.id=id;
     }
 }
